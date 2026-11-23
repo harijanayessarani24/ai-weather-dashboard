@@ -28,16 +28,17 @@ let currentSearch = "Bengaluru";
 const $ = (id) => document.getElementById(id);
 
 const temp = (celsius) => {
-  if (unit === "celsius") {
-    return Math.round(celsius);
-  }
-
+  if (unit === "celsius") return Math.round(celsius);
   return Math.round((celsius * 9) / 5 + 32);
 };
 
 const symbol = () => (unit === "celsius" ? "C" : "F");
 
-const codeInfo = (code) => {
+const codeInfo = (code, isDay = 1) => {
+  if (!isDay && code === 0) return ["Clear night", "🌙"];
+  if (!isDay && code === 1) return ["Mostly clear night", "🌙"];
+  if (!isDay && code === 2) return ["Partly cloudy night", "☁️"];
+
   return weatherCodes[code] || ["Changing skies", "🌥️"];
 };
 
@@ -69,12 +70,11 @@ async function getWeather(latitude, longitude) {
     latitude,
     longitude,
     current:
-      "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+      "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day",
     daily:
       "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
-
-    hourly: 
-      "temperature_2m,weather_code,precipitation_probability",
+    hourly:
+      "temperature_2m,weather_code,precipitation_probability,is_day",
     timezone: "auto",
     forecast_days: "5"
   });
@@ -94,7 +94,11 @@ async function getWeather(latitude, longitude) {
 function render() {
   const current = data.current;
   const daily = data.daily;
-  const [condition, icon] = codeInfo(current.weather_code);
+
+  const [condition, icon] = codeInfo(
+    current.weather_code,
+    current.is_day
+  );
 
   $("location-name").textContent = locationName;
   $("condition").textContent = condition;
@@ -107,13 +111,15 @@ function render() {
   }).format(new Date());
 
   $("current-temp").textContent = temp(current.temperature_2m);
-  $("feels-like").textContent = `${temp(
-    current.apparent_temperature
-  )}°${symbol()}`;
+
+  $("feels-like").textContent =
+    `${temp(current.apparent_temperature)}°${symbol()}`;
 
   $("humidity").textContent = `${current.relative_humidity_2m}%`;
   $("wind").textContent = `${Math.round(current.wind_speed_10m)} km/h`;
-  $("rain-chance").textContent = `${daily.precipitation_probability_max[0]}%`;
+
+  $("rain-chance").textContent =
+    `${daily.precipitation_probability_max[0]}%`;
 
   $("high-low").textContent =
     `H: ${temp(daily.temperature_2m_max[0])}° ` +
@@ -136,6 +142,7 @@ function renderForecast() {
 
   data.daily.time.forEach((day, index) => {
     const node = $("forecast-template").content.cloneNode(true);
+
     const [name, icon] = codeInfo(data.daily.weather_code[index]);
 
     node.querySelector(".forecast-date").textContent =
@@ -147,6 +154,7 @@ function renderForecast() {
 
     node.querySelector(".forecast-icon").textContent = icon;
     node.querySelector(".forecast-condition").textContent = name;
+
     node.querySelector(".forecast-max").textContent =
       `${temp(data.daily.temperature_2m_max[index])}°`;
 
@@ -166,14 +174,19 @@ function renderHourly() {
   );
 
   const startIndex = currentHourIndex === -1 ? 0 : currentHourIndex;
+  const endIndex = Math.min(startIndex + 12, data.hourly.time.length);
 
-  for (let index = startIndex; index < startIndex + 12; index++) {
+  for (let index = startIndex; index < endIndex; index++) {
     const node = $("hourly-template").content.cloneNode(true);
 
     const time = data.hourly.time[index];
     const temperature = data.hourly.temperature_2m[index];
     const rainChance = data.hourly.precipitation_probability[index];
-    const [, icon] = codeInfo(data.hourly.weather_code[index]);
+
+    const [, icon] = codeInfo(
+      data.hourly.weather_code[index],
+      data.hourly.is_day[index]
+    );
 
     node.querySelector(".hourly-time").textContent =
       index === startIndex
@@ -183,6 +196,7 @@ function renderHourly() {
           }).format(new Date(`${time}:00`));
 
     node.querySelector(".hourly-icon").textContent = icon;
+
     node.querySelector(".hourly-temp").textContent =
       `${temp(temperature)}°`;
 
@@ -265,6 +279,7 @@ function renderSavedCities() {
     const chip = document.createElement("div");
 
     chip.className = "city-chip";
+
     chip.innerHTML =
       `<span>${city}</span>` +
       `<button class="remove-city" aria-label="Remove ${city}">×</button>`;
