@@ -72,6 +72,9 @@ async function getWeather(latitude, longitude) {
       "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
     daily:
       "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+
+    hourly: 
+      "temperature_2m,weather_code,precipitation_probability",
     timezone: "auto",
     forecast_days: "5"
   });
@@ -119,6 +122,7 @@ function render() {
   $("unit-toggle").textContent = `°${symbol()}`;
 
   renderForecast();
+  renderHourly();
   renderInsight();
   renderSavedCities();
 
@@ -151,6 +155,42 @@ function renderForecast() {
 
     list.append(node);
   });
+}
+
+function renderHourly() {
+  const list = $("hourly-list");
+  list.innerHTML = "";
+
+  const currentHourIndex = data.hourly.time.findIndex(
+    (time) => time >= data.current.time
+  );
+
+  const startIndex = currentHourIndex === -1 ? 0 : currentHourIndex;
+
+  for (let index = startIndex; index < startIndex + 12; index++) {
+    const node = $("hourly-template").content.cloneNode(true);
+
+    const time = data.hourly.time[index];
+    const temperature = data.hourly.temperature_2m[index];
+    const rainChance = data.hourly.precipitation_probability[index];
+    const [, icon] = codeInfo(data.hourly.weather_code[index]);
+
+    node.querySelector(".hourly-time").textContent =
+      index === startIndex
+        ? "Now"
+        : new Intl.DateTimeFormat("en", {
+            hour: "numeric"
+          }).format(new Date(`${time}:00`));
+
+    node.querySelector(".hourly-icon").textContent = icon;
+    node.querySelector(".hourly-temp").textContent =
+      `${temp(temperature)}°`;
+
+    node.querySelector(".hourly-rain").textContent =
+      `${rainChance}% rain`;
+
+    list.append(node);
+  }
 }
 
 function renderInsight() {

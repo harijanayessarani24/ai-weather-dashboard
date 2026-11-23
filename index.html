@@ -102,6 +102,27 @@
           </article>
         </section>
 
+        <section class="panel hourly-panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">NEXT 12 HOURS</p>
+      <h2>Hourly forecast</h2>
+    </div>
+    <span>Local time</span>
+  </div>
+
+  <div id="hourly-list" class="hourly-list"></div>
+</section>
+
+<template id="hourly-template">
+  <article class="hourly-card">
+    <span class="hourly-time"></span>
+    <span class="hourly-icon"></span>
+    <strong class="hourly-temp"></strong>
+    <small class="hourly-rain"></small>
+  </article>
+</template>
+
         <section class="saved-cities" aria-labelledby="saved-heading">
           <div class="saved-heading">
             <div>

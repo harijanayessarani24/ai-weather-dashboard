@@ -408,3 +408,52 @@ body {
     grid-column: span 2;
   }
 }
+
+.hourly-panel {
+  margin: 16px 0;
+}
+
+.hourly-list {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(82px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  padding-bottom: 8px;
+  overflow-x: auto;
+}
+
+.hourly-card {
+  display: grid;
+  min-width: 82px;
+  gap: 8px;
+  padding: 14px 10px;
+  text-align: center;
+  background: #f1f8f7;
+  border: 1px solid #dceee9;
+  border-radius: 14px;
+}
+
+.hourly-time {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hourly-icon {
+  font-size: 24px;
+}
+
+.hourly-temp {
+  font: 600 18px "Space Grotesk", sans-serif;
+}
+
+.hourly-rain {
+  color: #43819a;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .hourly-card {
+    min-width: 76px;
+  }
+}
