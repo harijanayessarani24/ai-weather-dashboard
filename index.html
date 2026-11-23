@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A focused weather dashboard with practical AI-style advice."
+    />
+    <title>Atmos | AI Weather Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Atmos home">
+          <span>◉</span> atmos
+        </a>
+
+        <form id="search-form" class="search" role="search">
+          <label class="sr-only" for="city-input">Search for a city</label>
+          <input
+            id="city-input"
+            type="search"
+            placeholder="Search a city…"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Search</button>
+        </form>
+
+        <button
+          id="location-button"
+          class="ghost-button"
+          type="button"
+          aria-label="Use my current location"
+        >
+          ⌖
+        </button>
+
+        <button
+          id="unit-toggle"
+          class="ghost-button"
+          type="button"
+          aria-label="Switch temperature unit"
+        >
+          °C
+        </button>
+      </header>
+
+      <p id="status" class="status" aria-live="polite">
+        Loading Bengaluru weather…
+      </p>
+
+      <section id="weather-content" hidden>
+        <section class="hero-card" aria-labelledby="location-name">
+          <div class="location-block">
+            <p id="today-label" class="eyebrow"></p>
+            <h1 id="location-name">Bengaluru, India</h1>
+            <p id="condition" class="condition">Clear sky</p>
+          </div>
+
+          <div class="temperature-block">
+            <span id="weather-icon" class="weather-icon" aria-hidden="true">
+              ☀️
+            </span>
+            <p>
+              <strong id="current-temp">--</strong>
+              <span class="degree">°</span>
+            </p>
+            <small id="high-low">H: --° &nbsp; L: --°</small>
+          </div>
+        </section>
+
+        <section class="metrics" aria-label="Current weather details">
+          <article>
+            <span>Feels like</span>
+            <strong id="feels-like">--°</strong>
+          </article>
+
+          <article>
+            <span>Humidity</span>
+            <strong id="humidity">--%</strong>
+          </article>
+
+          <article>
+            <span>Wind</span>
+            <strong id="wind">-- km/h</strong>
+          </article>
+
+          <article>
+            <span>Rain chance</span>
+            <strong id="rain-chance">--%</strong>
+          </article>
+        </section>
+
+        <section class="saved-cities" aria-labelledby="saved-heading">
+          <div class="saved-heading">
+            <div>
+              <p class="eyebrow">QUICK ACCESS</p>
+              <h2 id="saved-heading">Saved cities</h2>
+            </div>
+
+            <button id="save-city" class="save-button" type="button">
+              ＋ Save this city
+            </button>
+          </div>
+
+          <div id="saved-city-list" class="saved-city-list"></div>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel forecast-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">OUTLOOK</p>
+                <h2>5-day forecast</h2>
+              </div>
+              <span>Daily</span>
+            </div>
+
+            <div id="forecast-list" class="forecast-list"></div>
+          </article>
+
+          <article class="panel assistant-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">ATMOS INSIGHT</p>
+                <h2>Your weather brief</h2>
+              </div>
+              <span class="ai-badge">✦ AI</span>
+            </div>
+
+            <p id="ai-summary" class="ai-summary"></p>
+            <div id="advice-list" class="advice-list"></div>
+
+            <button id="refresh-insight" class="text-button" type="button">
+              Refresh insight ↻
+            </button>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <template id="forecast-template">
+      <article class="forecast-day">
+        <span class="forecast-date"></span>
+        <span class="forecast-icon"></span>
+        <span class="forecast-condition"></span>
+        <strong class="forecast-max"></strong>
+        <span class="forecast-min"></span>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
