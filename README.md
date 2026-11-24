@@ -2,6 +2,10 @@
 
 A responsive weather dashboard that combines current conditions, a five-day forecast, and contextual activity advice.
 
+## Live Demo
+
+[Open the live dashboard](https://harijanayessarani24.github.io/ai-weather-dashboard/)
+
 ## What it demonstrates
 
 - Real-time city search using Open-Meteo's geocoding and forecast APIs
